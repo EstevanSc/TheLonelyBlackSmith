@@ -17,5 +17,15 @@ public:
 
 	/* Destructor */
 	~ItemsManager();
+
+	/* Method to add an item */
+	void addItem(const Item& item);
+
+	/* Method to get the higher item of a type*/
+	Item* getHighestItemOfType(ItemType type) const;
+
+	/* Method to check if an ItemCategory is owned */
+	bool hasItem(const ItemCategory& category);
+	
 };
 

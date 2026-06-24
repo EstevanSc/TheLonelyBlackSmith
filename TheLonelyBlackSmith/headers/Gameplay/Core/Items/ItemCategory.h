@@ -18,4 +18,9 @@ struct ItemCategory
 		if (type_ != other.type_) return type_ < other.type_;
 		return ressource_ < other.ressource_;
 	}
+
+	/* == operator */
+	bool operator==(const ItemCategory& other) const {
+		return type_ == other.type_ && ressource_ == other.ressource_;
+	}
 };

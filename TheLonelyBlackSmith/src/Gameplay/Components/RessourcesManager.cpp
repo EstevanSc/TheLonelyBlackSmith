@@ -4,9 +4,11 @@
 RessourcesManager::RessourcesManager(std::map<RessourceType, int> initialRessources)
 {
 	ressources_ = initialRessources;
+	Config config;
+	ressourcesNames_ = config.RESSOURCE_NAMES;
 }
 
-RessourcesManager::RessourcesManager(Config& config)
+RessourcesManager::RessourcesManager(Config& config) : ressourcesNames_(config.RESSOURCE_NAMES)
 {
 	ressources_ = config.INITIAL_RESSOURCES;
 }
@@ -55,6 +57,22 @@ void RessourcesManager::removeRessource(RessourceType type, int amount)
 		throw std::runtime_error("Ressource type not found.");
 	}
 	ressources_[type] -= amount;
+}
+
+void RessourcesManager::showRessources() const
+{
+	std::cout << "\nRessources disponibles:" << std::endl;
+	for (const auto& pair : ressources_) {
+		if (pair.first == RessourceType::NONE) {
+			continue;
+		}
+		if (ressourcesNames_.find(pair.first) == ressourcesNames_.end()) {
+			throw std::runtime_error("Ressource name not found for type.");
+			continue;
+		}
+		std::string ressourceName = ressourcesNames_.at(pair.first);
+		std::cout << ressourceName << ": " << pair.second << std::endl;
+	}
 }
 
 const std::map<RessourceType, int>& RessourcesManager::getRessources() const

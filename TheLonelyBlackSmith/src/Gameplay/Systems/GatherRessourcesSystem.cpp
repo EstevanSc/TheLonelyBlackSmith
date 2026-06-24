@@ -44,7 +44,7 @@ bool GatherRessourcesSystem::gatherRessources(Game& game, Player& player, Ressou
 
 	int gatheredAmount = bestLootRange.getRandomLoot();
 	if (bestLootRange.min_ == 0 && bestLootRange.max_ == 0) {
-		std::cout << "No suitable tool found for gathering ";
+		std::cout << "Aucun outil adapté trouvé pour collecter "<< ressourceNames_.at(ressourceType) << "." << std::endl;
 		return false;
 	}
 
@@ -56,11 +56,40 @@ bool GatherRessourcesSystem::gatherRessources(Game& game, Player& player, Ressou
 
 	ressourcesManager->addRessource(ressourceType, gatheredAmount);
 	if (ressourceNames_.find(ressourceType) != ressourceNames_.end()) {
-		std::cout << "Gathered " << gatheredAmount << " of " << ressourceNames_[ressourceType] << " in " << turnsNeeded << " turns." << std::endl;
+		std::cout << gatheredAmount << " de " << ressourceNames_[ressourceType] << " collecté en " << turnsNeeded << " tours." << std::endl;
 	}
 	else {
-		std::cout << "Gathered " << gatheredAmount << " of unknown ressource type in " << turnsNeeded << " turns." << std::endl;
+		std::cout << gatheredAmount << " d'un type de ressource inconnu collecté en " << turnsNeeded << " tours." << std::endl;
 	}
 
 	game.increaseTurn(turnsNeeded);
+}
+
+void GatherRessourcesSystem::showGatherOptions(Player& player) const
+{
+	for (int i = 1; i < static_cast<int>(RessourceType::COUNT); ++i) {
+		RessourceType ressourceType = static_cast<RessourceType>(i);
+		if (ressourceNames_.find(ressourceType) != ressourceNames_.end()) {
+			std::cout << i << ". " << ressourceNames_.at(ressourceType);
+		}
+		else {
+			std::cout << i << ". unknown";
+		}
+		if (i < static_cast<int>(RessourceType::COUNT) - 1) {
+			std::cout << " | ";
+		}
+	}
+	std::cout << std::endl;
+}
+
+int GatherRessourcesSystem::getNumberOfGatherOptions() const
+{
+	int numberOfOptions = 0;
+	for (int i = 0; i < static_cast<int>(RessourceType::COUNT); ++i) {
+		RessourceType ressourceType = static_cast<RessourceType>(i);
+		if (ressourceNames_.find(ressourceType) != ressourceNames_.end()) {
+			numberOfOptions++;
+		}
+	}
+	return numberOfOptions;
 }

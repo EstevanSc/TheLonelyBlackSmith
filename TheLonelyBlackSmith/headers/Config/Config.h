@@ -79,21 +79,21 @@ public:
 
     /* Item names */
     const std::map<ItemCategory, std::string> ITEM_NAMES = {
-        { {ItemType::PICKAXE, RessourceType::WOOD},  "Wooden Pickaxe" },
-        { {ItemType::PICKAXE, RessourceType::STONE}, "Stone Pickaxe" },
-        { {ItemType::PICKAXE, RessourceType::IRON},  "Iron Pickaxe" },
-        { {ItemType::AXE, RessourceType::WOOD},      "Wooden Axe" },
-        { {ItemType::AXE, RessourceType::STONE},     "Stone Axe" },
-        { {ItemType::AXE, RessourceType::IRON},      "Iron Axe" },
-        { {ItemType::HAMMER, RessourceType::WOOD},   "Rudimentary Hammer" },
-        { {ItemType::HAMMER, RessourceType::STONE},  "Stone Hammer" },
-        { {ItemType::HAMMER, RessourceType::IRON},   "Iron Hammer" }
-	};
+        { {ItemType::PICKAXE, RessourceType::WOOD},  "Pioche en bois" },
+        { {ItemType::PICKAXE, RessourceType::STONE}, "Pioche en pierre" },
+        { {ItemType::PICKAXE, RessourceType::IRON},  "Pioche en fer" },
+        { {ItemType::AXE, RessourceType::WOOD},      "Hache en bois" },
+        { {ItemType::AXE, RessourceType::STONE},     "Hache en pierre" },
+        { {ItemType::AXE, RessourceType::IRON},      "Hache en fer" },
+        { {ItemType::HAMMER, RessourceType::WOOD},   "Marteau rudimentaire" },
+        { {ItemType::HAMMER, RessourceType::STONE},  "Marteau en pierre" },
+        { {ItemType::HAMMER, RessourceType::IRON},   "Marteau en fer" }
+    };
 
 	/* Structure names */
     const std::map<StructureType, std::string> STRUCTURE_NAMES = {
         { StructureType::FORGE, "Forge" }
-	};
+    };
 
     /* Turns to collect Ressources */
 	const std::map<RessourceType, int> TURNS_TO_COLLECT = {
@@ -104,8 +104,8 @@ public:
 
     /* Ressources names */
     const std::map<RessourceType, std::string> RESSOURCE_NAMES = {
-        { RessourceType::WOOD, "Wood" },
-        { RessourceType::STONE, "Stone" },
-        { RessourceType::IRON, "Iron" }
-	};
+        { RessourceType::WOOD,  "Bois" },
+        { RessourceType::STONE, "Pierre" },
+        { RessourceType::IRON,  "Fer" }
+    };
 };

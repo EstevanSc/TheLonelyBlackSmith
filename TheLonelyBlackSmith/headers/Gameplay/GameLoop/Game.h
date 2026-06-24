@@ -26,6 +26,9 @@ private:
 	/* Crafting system */
 	CraftSystem* craftSystem_;
 
+	/* Config stored to restart the game */
+	Config* config_;
+
 public:
 	/* Constructors */
 	Game();
@@ -74,4 +77,7 @@ private:
 
 	/* Method to show the game Over menu*/
 	void showGameOverMenu();
+
+	/* Method to reset the game */
+	void resetGame();
 };

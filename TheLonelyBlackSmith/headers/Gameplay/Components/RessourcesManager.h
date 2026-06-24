@@ -7,7 +7,11 @@
 class RessourcesManager
 {
 private:
+	/* ressources inventory */
 	std::map<RessourceType, int> ressources_;
+
+	/* ressources names */
+	std::map<RessourceType, std::string> ressourcesNames_;
 
 public:
 	/* Constructors */
@@ -25,6 +29,9 @@ public:
 
 	/* Method to remove ressources */
 	void removeRessource(RessourceType type, int amount);
+
+	/* Method to show current ressources */
+	void showRessources() const;
 
 	/* Getter for ressources */
 	const std::map<RessourceType, int>& getRessources() const;

@@ -42,6 +42,9 @@ public:
 	/* method to increase the current turn number*/
 	void increaseTurn(int amount = 1);
 
+	/* method to check if it is possible to increase the turns by an amount*/
+	bool canIncreaseTurn(int amount = 1) const;
+
 	/* Getters and Setters */
 
 	// game state
@@ -80,4 +83,7 @@ private:
 
 	/* Method to reset the game */
 	void resetGame();
+
+	/* Check if the player still have possible actions */
+	bool hasPossibleActions() const;
 };

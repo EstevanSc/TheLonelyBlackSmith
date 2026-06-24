@@ -56,6 +56,9 @@ public:
 	/* Method to show constructed structures */
 	void showConstructedStructures() const;
 
+	/* Method to get the minimum turn to craft something */
+	int getMinimumTurnToCraft(Player& player) const;
+
 private:
 	// helper methods
 

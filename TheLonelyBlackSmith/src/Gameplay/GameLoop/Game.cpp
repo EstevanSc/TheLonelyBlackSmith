@@ -63,10 +63,22 @@ void Game::increaseTurn(int amount)
 {
     if (currentTurn_ < maxTurns_) {
         currentTurn_+= amount;
+        if (currentTurn_ >= maxTurns_ || !hasPossibleActions()) {
+			currentTurn_ = maxTurns_;
+            gameState_ = GameState::GAMEOVER;
+		}
     }
     else {
         gameState_ = GameState::GAMEOVER;
 	}
+}
+
+bool Game::canIncreaseTurn(int amount) const
+{
+    if (currentTurn_ + amount <= maxTurns_) {
+        return true;
+	}
+	return false;
 }
 
 void Game::setGameState(GameState state)
@@ -151,7 +163,7 @@ void Game::handleGameState()
         return;
 	}
     while (gameState_ == GameState::GAME) {
-        std::cout << "\n--- Tour " << currentTurn_ << "/" << maxTurns_ << " ---" << std::endl;
+        std::cout << "\n--- Tour " << currentTurn_+1 << "/" << maxTurns_ << " ---" << std::endl;
         std::cout << "Score: " << player_->getScore() << std::endl;
         std::cout << "1. Collecter des ressources" << std::endl;
         std::cout << "2. Fabriquer un objet" << std::endl;
@@ -244,6 +256,31 @@ void Game::resetGame()
         player_ = new Player();
 	}
 	gameState_ = GameState::MENU;
+}
+
+bool Game::hasPossibleActions() const
+{
+    if (!player_) {
+        throw std::runtime_error("Game::hasPossibleActions() : Player is not initialized.");
+        return false;
+    }
+    if (!gatherRessourcesSystem_) {
+        throw std::runtime_error("Game::hasPossibleActions() : GatherRessourcesSystem is not initialized.");
+        return false;
+	}
+    if (!craftSystem_) {
+        throw std::runtime_error("Game::hasPossibleActions() : CraftSystem is not initialized.");
+		return false;
+	}
+
+	int minTurnsToGather = gatherRessourcesSystem_->getMinimumTurnsToGather();
+	int minTurnsToCraft = craftSystem_->getMinimumTurnToCraft(*player_);
+	int remainingTurns = maxTurns_ - currentTurn_;
+    if (minTurnsToGather <= remainingTurns || minTurnsToCraft <= remainingTurns) {
+        return true;
+    }
+	std::cout << "Aucune action possible, vous n'avez pas assez de tours restants pour collecter ou fabriquer." << std::endl;
+    return false;
 }
 
 void Game::showGatherRessourcesInterface()

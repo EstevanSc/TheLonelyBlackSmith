@@ -125,12 +125,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Gameplay\GameLoop\Game.cpp" />
     <ClCompile Include="src\Gameplay\Components\ItemsManager.cpp" />
+    <ClCompile Include="src\Gameplay\Components\RessourcesManager.cpp" />
     <ClCompile Include="src\Gameplay\Entities\Player.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\Gameplay\GameLoop\Game.h" />
     <ClInclude Include="headers\Config\Config.h" />
+    <ClInclude Include="headers\Gameplay\Components\RessourcesManager.h" />
     <ClInclude Include="headers\Gameplay\Core\Items\Item.h" />
     <ClInclude Include="headers\Gameplay\Core\Items\ItemCategory.h" />
     <ClInclude Include="headers\Gameplay\Core\Items\ItemType.h" />
@@ -140,6 +144,7 @@
     <ClInclude Include="headers\Gameplay\Core\StructureType.h" />
     <ClInclude Include="headers\Gameplay\Entities\Player.h" />
     <ClInclude Include="headers\Gameplay\Components\ItemsManager.h" />
+    <ClInclude Include="headers\Gameplay\GameLoop\GameState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

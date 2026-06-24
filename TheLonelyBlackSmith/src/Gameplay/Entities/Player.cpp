@@ -7,6 +7,8 @@ Player::Player(Config& config) : ressourcesManager_(new RessourcesManager(config
 
 Player::~Player()
 {
+	delete ressourcesManager_;
+	delete itemsManager_;
 }
 
 void Player::setScore(int score)

@@ -1,5 +1,6 @@
 #pragma once
 #include "ItemType.h"
+#include "Gameplay/Core/RessourceType.h"
 
 /* Item Category */
 struct ItemCategory
@@ -11,7 +12,7 @@ struct ItemCategory
 	RessourceType ressource_;
 
 	/* Constructor */
-	ItemCategory(ItemType t, RessourceType r) : type_(t), ressource_(r) {}
+	ItemCategory(ItemType type = ItemType::NONE, RessourceType ressource = RessourceType::NONE) : type_(type), ressource_(ressource) {}
 
 	/* < operator */
 	bool operator<(const ItemCategory& other) const {

@@ -4,6 +4,8 @@
 #include <Gameplay/Systems/GatherRessourcesSystem.h>
 #include <Gameplay/Systems/CraftSystem.h>
 
+class BotSystem;
+
 /* Game class managing game loop*/
 class Game
 {
@@ -25,6 +27,9 @@ private:
 
 	/* Crafting system */
 	CraftSystem* craftSystem_;
+
+	/* Bot system */
+	BotSystem* botSystem_;
 
 	/* Config stored to restart the game */
 	Config* config_;

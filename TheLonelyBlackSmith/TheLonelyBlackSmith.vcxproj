@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Gameplay\Systems\BotSystem.cpp" />
     <ClCompile Include="src\Gameplay\Systems\CraftSystem.cpp" />
     <ClCompile Include="src\Gameplay\Systems\GatherRessourcesSystem.cpp" />
     <ClCompile Include="src\Gameplay\GameLoop\Game.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\Gameplay\Systems\BotSystem.h" />
     <ClInclude Include="headers\Gameplay\Systems\CraftSystem.h" />
     <ClInclude Include="headers\Gameplay\Systems\GatherRessourcesSystem.h" />
     <ClInclude Include="headers\Gameplay\GameLoop\Game.h" />

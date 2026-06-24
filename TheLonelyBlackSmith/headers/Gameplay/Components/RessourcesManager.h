@@ -35,5 +35,8 @@ public:
 
 	/* Getter for ressources */
 	const std::map<RessourceType, int>& getRessources() const;
+
+	/* Getter for a ressource amount */
+	int getRessource(RessourceType type) const;
 };
 

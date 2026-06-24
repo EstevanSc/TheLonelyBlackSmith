@@ -31,6 +31,9 @@ bool GatherRessourcesSystem::gatherRessources(Game& game, Player& player, Ressou
 			higestOwnedItems.push_back(highestItem->category_);
 		}
 	}
+	ItemCategory defaultItemCategory = { ItemType::NONE, RessourceType::NONE };
+	higestOwnedItems.push_back(defaultItemCategory);
+
 	LootRange bestLootRange = { 0, 0 };
 	for (const auto& itemCategory : higestOwnedItems) {
 		auto it = lootRanges_.find({ itemCategory, ressourceType });
@@ -67,6 +70,39 @@ bool GatherRessourcesSystem::gatherRessources(Game& game, Player& player, Ressou
 	}
 
 	game.increaseTurn(turnsNeeded);
+	return true;
+}
+
+bool GatherRessourcesSystem::canGatherRessource(Player& player, RessourceType ressourceType) const
+{
+	ItemsManager* itemsManager = player.getItemsManager();
+	RessourcesManager* ressourcesManager = player.getRessourcesManager();
+	if (ressourcesManager == nullptr || itemsManager == nullptr) {
+		throw std::runtime_error("GatherRessourcesSystem::gatherRessources, Player does not have a RessourcesManager or ItemsManager.");
+		return false;
+	}
+	std::list<ItemCategory> higestOwnedItems;
+	for (int i = 0; i < static_cast<int>(ItemType::COUNT); ++i) {
+		ItemType itemType = static_cast<ItemType>(i);
+		Item* highestItem = itemsManager->getHighestItemOfType(itemType);
+		if (highestItem != nullptr) {
+			higestOwnedItems.push_back(highestItem->category_);
+		}
+	}
+	LootRange bestLootRange = { 0, 0 };
+	for (const auto& itemCategory : higestOwnedItems) {
+		auto it = lootRanges_.find({ itemCategory, ressourceType });
+		if (it != lootRanges_.end()) {
+			const LootRange& currentLootRange = it->second;
+			if (bestLootRange < currentLootRange) {
+				bestLootRange = currentLootRange;
+			}
+		}
+	}
+
+	if (bestLootRange.min_ == 0 && bestLootRange.max_ == 0) {
+		return false;
+	}
 	return true;
 }
 

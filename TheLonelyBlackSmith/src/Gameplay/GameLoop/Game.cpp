@@ -1,3 +1,4 @@
+#include <Gameplay/Systems/BotSystem.h>
 #include "Gameplay/GameLoop/Game.h"
 #include <stdexcept>
 #include <iostream>
@@ -11,12 +12,13 @@ Game::Game()
 	gameState_ = GameState::MENU;
 	gatherRessourcesSystem_ = new GatherRessourcesSystem(config);
 	craftSystem_ = new CraftSystem(config);
+	botSystem_ = new BotSystem();
 	config_ = &config;
 }
 
 Game::Game(Config& config) : player_(new Player(config)), currentTurn_(0), maxTurns_(config.MAX_TURNS), 
 gameState_(GameState::MENU), gatherRessourcesSystem_(new GatherRessourcesSystem(config)), craftSystem_(new CraftSystem(config)),
-config_(&config)
+config_(&config), botSystem_(new BotSystem())
 {
 
 }
@@ -35,6 +37,10 @@ Game::~Game()
         delete craftSystem_;
         craftSystem_ = nullptr;
     }
+    if (botSystem_) {
+        delete botSystem_;
+        botSystem_ = nullptr;
+	}
 }
 
 void Game::runMainLoop()
@@ -47,6 +53,9 @@ void Game::runMainLoop()
             case GameState::GAME:
 			    handleGameState();
                 break;
+            case GameState::BOTPLAYING:
+				botSystem_->playTurn(*this, *player_, *craftSystem_, *gatherRessourcesSystem_);
+				break;
             case GameState::GAMEOVER:
 			    showGameOverMenu();
                 break;
@@ -65,10 +74,12 @@ void Game::increaseTurn(int amount)
         currentTurn_+= amount;
         if (currentTurn_ >= maxTurns_ || !hasPossibleActions()) {
 			currentTurn_ = maxTurns_;
+			showRessourcesDisplayInterface();
             gameState_ = GameState::GAMEOVER;
 		}
     }
     else {
+		showRessourcesDisplayInterface();
         gameState_ = GameState::GAMEOVER;
 	}
 }
@@ -125,7 +136,8 @@ void Game::handleMenuState()
     while (gameState_ == GameState::MENU) {
         std::cout << "\n--- THE LONELY BLACKSMITH ---" << std::endl;
         std::cout << "1. Commencer la partie" << std::endl;
-        std::cout << "2. Quitter le jeu" << std::endl;
+        std::cout << "2. Mode Bot" << std::endl;
+        std::cout << "3. Quitter le jeu" << std::endl;
         std::cout << "Choix: ";
 
         if (!(std::cin >> choice)) {
@@ -140,8 +152,11 @@ void Game::handleMenuState()
             gameState_ = GameState::GAME;
             break;
         case 2:
-            gameState_ = GameState::QUIT;
+            gameState_ = GameState::BOTPLAYING;
             break;
+        case 3:
+			gameState_ = GameState::QUIT;
+			break;
         default:
 			throw std::runtime_error("Invalid menu choice. Please enter 1 or 2.");
         }
@@ -232,7 +247,7 @@ void Game::showGameOverMenu()
     std::cin >> choice;
     switch (choice) {
     case 1:
-        gameState_ = GameState::MENU;
+        resetGame();
         break;
     case 2:
         gameState_ = GameState::QUIT;
@@ -249,11 +264,27 @@ void Game::resetGame()
     if (player_) {
         delete player_;
     }
+    if (gatherRessourcesSystem_) {
+        delete gatherRessourcesSystem_;
+	}
+    if (craftSystem_) {
+        delete craftSystem_;
+	}
+    if (botSystem_) {
+        delete botSystem_;
+    }
     if (config_) {
         player_ = new Player(*config_);
+		gatherRessourcesSystem_ = new GatherRessourcesSystem(*config_);
+		craftSystem_ = new CraftSystem(*config_);
+        botSystem_ = new BotSystem(*config_);
+		
     }
     else {
         player_ = new Player();
+		gatherRessourcesSystem_ = new GatherRessourcesSystem();
+		craftSystem_ = new CraftSystem();
+		botSystem_ = new BotSystem();
 	}
 	gameState_ = GameState::MENU;
 }

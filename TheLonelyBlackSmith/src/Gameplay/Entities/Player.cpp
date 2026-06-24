@@ -1,14 +1,20 @@
 #include "Gameplay/Entities/Player.h"
 #include <stdexcept>
 
-Player::Player(Config& config) : ressourcesManager_(new RessourcesManager(config)), itemsManager_()
+Player::Player(Config& config) : ressourcesManager_(new RessourcesManager(config)), itemsManager_(new ItemsManager()), score_(0)
 {
 }
 
 Player::~Player()
 {
-	delete ressourcesManager_;
-	delete itemsManager_;
+	if (itemsManager_) {
+		delete itemsManager_;
+		itemsManager_ = nullptr;
+	}
+	if (ressourcesManager_) {
+		delete ressourcesManager_;
+		ressourcesManager_ = nullptr;
+	}
 }
 
 void Player::setScore(int score)

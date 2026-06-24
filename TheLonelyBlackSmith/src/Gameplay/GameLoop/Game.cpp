@@ -2,7 +2,17 @@
 #include <stdexcept>
 #include <iostream>
 
-Game::Game(Config& config) : player_(new Player(config)), currentTurn_(0), maxTurns_(config.MAX_TURNS), gameState_(GameState::MENU)
+Game::Game()
+{
+	Config config;
+	player_ = new Player(config);
+	currentTurn_ = 0;
+	maxTurns_ = config.MAX_TURNS;
+	gameState_ = GameState::MENU;
+	gatherRessourcesSystem_ = new GatherRessourcesSystem(config);
+}
+
+Game::Game(Config& config) : player_(new Player(config)), currentTurn_(0), maxTurns_(config.MAX_TURNS), gameState_(GameState::MENU), gatherRessourcesSystem_(new GatherRessourcesSystem(config))
 {
 
 }
@@ -13,6 +23,14 @@ Game::~Game()
 		delete player_;
 		player_ = nullptr;
 	}
+    if (gatherRessourcesSystem_) {
+		delete gatherRessourcesSystem_;
+		gatherRessourcesSystem_ = nullptr;
+    }
+    if (craftSystem_) {
+        delete craftSystem_;
+        craftSystem_ = nullptr;
+    }
 }
 
 void Game::runMainLoop()
@@ -37,10 +55,10 @@ void Game::runMainLoop()
 	}
 }
 
-void Game::increaseTurn()
+void Game::increaseTurn(int amount)
 {
     if (currentTurn_ < maxTurns_) {
-        currentTurn_++;
+        currentTurn_+= amount;
     }
     else {
         gameState_ = GameState::GAMEOVER;
@@ -154,10 +172,10 @@ void Game::showRessourcesDisplayInterface()
 {
     std::cout << "\n--- Current Inventory ---" << std::endl;
 	RessourcesManager* resManager = player_->getRessourcesManager();
-	const auto& inventory = resManager->ressources_;
+    const auto& inventory = resManager->getRessources();
     
     if (resManager) {
-        const auto& inventory = resManager->ressources_;
+		const auto& inventory = resManager->getRessources();
 
         std::cout << "Wood: " << inventory.at(RessourceType::WOOD) << " | "
             << "Stone: " << inventory.at(RessourceType::STONE) << " | "
@@ -174,6 +192,7 @@ void Game::showGameOverMenu()
     std::cout << "Your final score: " << player_->getScore() << std::endl;
     std::cout << "1. Return to Main Menu" << std::endl;
     std::cout << "2. Quit Game" << std::endl;
+    std::cout << "Choice: ";
     int choice;
     std::cin >> choice;
     switch (choice) {
@@ -193,13 +212,13 @@ void Game::showGatherRessourcesInterface()
 {
     std::cout << "\nWhich resource to gather?" << std::endl;
     std::cout << "1. Wood | 2. Stone | 3. Iron" << std::endl;
+    std::cout << "Choice: ";
+
     int resChoice;
     std::cin >> resChoice;
 
     RessourceType target = static_cast<RessourceType>(resChoice);
-
-    // TODO: GatherRessources System
-    std::cout << "Gathering completed!" << std::endl;
+	gatherRessourcesSystem_->gatherRessources(*this, *player_, target);
 }
 
 void Game::showCraftItemInterface()

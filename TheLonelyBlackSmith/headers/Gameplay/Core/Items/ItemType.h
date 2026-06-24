@@ -7,4 +7,5 @@ enum class ItemType
 	HAMMER,
 	AXE,
 	PICKAXE,
+	COUNT // useful for iteration
 };

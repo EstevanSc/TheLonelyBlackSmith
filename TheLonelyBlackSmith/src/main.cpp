@@ -6,6 +6,7 @@
 int main() {
 	// Initialize the game configuration
 	Config config;
+
 	// Create a Game instance
 	Game game(config);
 

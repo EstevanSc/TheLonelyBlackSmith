@@ -1,6 +1,8 @@
 #pragma once
 #include "GameState.h"
 #include <Gameplay/Entities/Player.h>
+#include <Gameplay/Systems/GatherRessourcesSystem.h>
+#include <Gameplay/Systems/CraftSystem.h>
 
 /* Game class managing game loop*/
 class Game
@@ -18,8 +20,15 @@ private:
 	/* Max turns */
 	int maxTurns_;
 
+	/* Gather ressources system */
+	GatherRessourcesSystem* gatherRessourcesSystem_;
+
+	/* Crafting system */
+	CraftSystem* craftSystem_;
+
 public:
-	/* Constructor */
+	/* Constructors */
+	Game();
 	Game(Config& config);
 	/* Destructor */
 	~Game();
@@ -28,7 +37,7 @@ public:
 	void runMainLoop();
 
 	/* method to increase the current turn number*/
-	void increaseTurn();
+	void increaseTurn(int amount = 1);
 
 	/* Getters and Setters */
 

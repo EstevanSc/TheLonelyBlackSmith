@@ -7,4 +7,5 @@ enum class RessourceType
 	WOOD,
 	STONE,
 	IRON,
+	COUNT // useful for iteration
 };

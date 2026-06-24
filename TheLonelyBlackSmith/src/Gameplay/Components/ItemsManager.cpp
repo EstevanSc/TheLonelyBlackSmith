@@ -22,23 +22,26 @@ void ItemsManager::addItem(const Item& item)
 
 Item* ItemsManager::getHighestItemOfType(ItemType type) const
 {
-	std::list<Item> itemsOfType;
-	for (const auto& pair : items_) {
-		if (pair.first.type_ == type) {
-			itemsOfType.push_back(pair.second);
-		}
-	}
-	// order the list by ressource type (WOOD < STONE < IRON)
-	itemsOfType.sort([](const Item& a, const Item& b) {
-		return a.category_.ressource_ < b.category_.ressource_;
-		});
-	// return the last item in the list (the highest)
-	if (!itemsOfType.empty()) {
-		return &itemsOfType.back();
-	}
-	else {
-		return nullptr;
-	}
+    Item* highestItem = nullptr;
+
+    for (const auto& pair : items_) {
+        const Item& currentItem = pair.second;
+
+        if (currentItem.category_.type_ == type) {
+            if (highestItem == nullptr ||
+                currentItem.category_.ressource_ > highestItem->category_.ressource_) {
+                highestItem = const_cast<Item*>(&currentItem);
+            }
+        }
+    }
+
+    if (highestItem != nullptr) {
+        return highestItem;
+    }
+
+    Item defaultNoneItem;
+    defaultNoneItem.category_ = ItemCategory(type, RessourceType::NONE);
+    return &defaultNoneItem;
 }
 
 bool ItemsManager::hasItem(const ItemCategory& category)

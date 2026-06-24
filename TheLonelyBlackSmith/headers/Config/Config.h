@@ -101,4 +101,11 @@ public:
         { RessourceType::STONE, 1 },
         { RessourceType::IRON, 1 }
     };
+
+    /* Ressources names */
+    const std::map<RessourceType, std::string> RESSOURCE_NAMES = {
+        { RessourceType::WOOD, "Wood" },
+        { RessourceType::STONE, "Stone" },
+        { RessourceType::IRON, "Iron" }
+	};
 };

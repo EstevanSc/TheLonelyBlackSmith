@@ -125,6 +125,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Gameplay\Systems\CraftSystem.cpp" />
+    <ClCompile Include="src\Gameplay\Systems\GatherRessourcesSystem.cpp" />
     <ClCompile Include="src\Gameplay\GameLoop\Game.cpp" />
     <ClCompile Include="src\Gameplay\Components\ItemsManager.cpp" />
     <ClCompile Include="src\Gameplay\Components\RessourcesManager.cpp" />
@@ -132,6 +134,8 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="headers\Gameplay\Systems\CraftSystem.h" />
+    <ClInclude Include="headers\Gameplay\Systems\GatherRessourcesSystem.h" />
     <ClInclude Include="headers\Gameplay\GameLoop\Game.h" />
     <ClInclude Include="headers\Config\Config.h" />
     <ClInclude Include="headers\Gameplay\Components\RessourcesManager.h" />

@@ -112,14 +112,14 @@ void Game::handleMenuState()
     int choice = 0;
     while (gameState_ == GameState::MENU) {
         std::cout << "\n--- THE LONELY BLACKSMITH ---" << std::endl;
-        std::cout << "1. Start Game" << std::endl;
-        std::cout << "2. Quit Game" << std::endl;
-        std::cout << "Choice: ";
+        std::cout << "1. Commencer la partie" << std::endl;
+        std::cout << "2. Quitter le jeu" << std::endl;
+        std::cout << "Choix: ";
 
         if (!(std::cin >> choice)) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid input, enter a number between 1 and 2." << std::endl;
+            std::cout << "Entrée invalide, entrez un nombre entre 1 et 2." << std::endl;
             continue;
         }
 
@@ -151,13 +151,13 @@ void Game::handleGameState()
         return;
 	}
     while (gameState_ == GameState::GAME) {
-        std::cout << "\n--- Turn " << currentTurn_ << "/" << maxTurns_ << " ---" << std::endl;
-		std::cout << "Score: " << player_->getScore() << std::endl;
-        std::cout << "1. Gather Resources" << std::endl;
-        std::cout << "2. Craft Item" << std::endl;
-        std::cout << "3. Show Current ressources" << std::endl;
-        std::cout << "4. Back to Main Menu" << std::endl;
-        std::cout << "Choice: ";
+        std::cout << "\n--- Tour " << currentTurn_ << "/" << maxTurns_ << " ---" << std::endl;
+        std::cout << "Score: " << player_->getScore() << std::endl;
+        std::cout << "1. Collecter des ressources" << std::endl;
+        std::cout << "2. Fabriquer un objet" << std::endl;
+        std::cout << "3. Afficher les ressources actuelles" << std::endl;
+        std::cout << "4. Retour au menu principal" << std::endl;
+        std::cout << "Choix: ";
 
         if (!(std::cin >> choice)) {
             std::cin.clear();
@@ -179,7 +179,7 @@ void Game::handleGameState()
             gameState_ = GameState::MENU;
             break;
         default:
-            std::cout << "Invalid choice." << std::endl;
+            std::cout << "Choix invalide." << std::endl;
             return;
         }
 	}
@@ -199,7 +199,7 @@ void Game::showRessourcesDisplayInterface()
         throw std::runtime_error("Game::showRessourcesDisplayInterface() : ItemsManager is not initialized.");
     }
 
-    std::cout << "\n--- Current Inventory ---" << std::endl;
+    std::cout << "\n--- Inventaire ---" << std::endl;
 	RessourcesManager* resManager = player_->getRessourcesManager();
     ItemsManager* itemsManager = player_->getItemsManager();
 
@@ -211,11 +211,11 @@ void Game::showRessourcesDisplayInterface()
 
 void Game::showGameOverMenu()
 {
-    std::cout << "\n--- Game Over ---" << std::endl;
-    std::cout << "Your final score: " << player_->getScore() << std::endl;
-    std::cout << "1. Return to Main Menu" << std::endl;
-    std::cout << "2. Quit Game" << std::endl;
-    std::cout << "Choice: ";
+    std::cout << "\n--- Fin de partie ---" << std::endl;
+    std::cout << "Votre score final : " << player_->getScore() << std::endl;
+    std::cout << "1. Retour au menu principal" << std::endl;
+    std::cout << "2. Quitter le jeu" << std::endl;
+    std::cout << "Choix: ";
     int choice;
     std::cin >> choice;
     switch (choice) {
@@ -226,7 +226,7 @@ void Game::showGameOverMenu()
         gameState_ = GameState::QUIT;
         break;
     default:
-        std::cout << "Invalid choice." << std::endl;
+        std::cout << "Choix invalide." << std::endl;
         break;
 	}
 }
@@ -252,16 +252,16 @@ void Game::showGatherRessourcesInterface()
         throw std::runtime_error("Game::showGatherRessourcesInterface() : GatherRessourcesSystem is not initialized.");
         return;
 	}
-    std::cout << "\nWhich resource to gather?" << std::endl;
+    std::cout << "\nQuelle ressource collecter ?" << std::endl;
 	gatherRessourcesSystem_->showGatherOptions(*player_);
 	int indexOfCancelOption = gatherRessourcesSystem_->getNumberOfGatherOptions() + 1;
-	std::cout << indexOfCancelOption << ". Back to Turn Menu" << std::endl;
-    std::cout << "Choice: ";
+	std::cout << indexOfCancelOption << ". Retour au menu du tour" << std::endl;
+    std::cout << "Choix: ";
 
     int resChoice;
     std::cin >> resChoice;
     if (resChoice < 1 || resChoice > indexOfCancelOption) {
-        std::cout << "Invalid choice. Returning to turn menu" << std::endl;
+        std::cout << "Choix invalide. Retour au menu du tour" << std::endl;
         return;
 	}
     if (resChoice == indexOfCancelOption) {
@@ -282,11 +282,11 @@ void Game::showCraftItemInterface()
         return;
     }
 
-    std::cout << "\n--- Available Recipes ---" << std::endl;
+    std::cout << "\n--- Recettes disponibles ---" << std::endl;
 	craftSystem_->showCraftList(*player_);
 	int numberOfCrafts = craftSystem_->getNumberOfCrafts();
-	std::cout << numberOfCrafts + 1 << ". Back to Game Menu" << std::endl;
-	std::cout << "Choice: ";
+	std::cout << numberOfCrafts + 1 << ". Retour au menu du tour" << std::endl;
+	std::cout << "Choix: ";
 
     int craftChoice;
     std::cin >> craftChoice;
@@ -297,7 +297,7 @@ void Game::showCraftItemInterface()
         return;
     }
     else {
-        std::cout << "Invalid choice. Returning to turn menu." << std::endl;
+        std::cout << "Choix invalide. Retour au menu du tour." << std::endl;
         return;
 	}
 }

@@ -61,7 +61,7 @@ void RessourcesManager::removeRessource(RessourceType type, int amount)
 
 void RessourcesManager::showRessources() const
 {
-	std::cout << "\nCurrent Ressources:" << std::endl;
+	std::cout << "\nRessources disponibles:" << std::endl;
 	for (const auto& pair : ressources_) {
 		if (pair.first == RessourceType::NONE) {
 			continue;

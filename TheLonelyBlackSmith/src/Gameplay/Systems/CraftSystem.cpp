@@ -52,19 +52,21 @@ bool CraftSystem::craftItem(Game& game, Player& player, const ItemCategory& item
 		return false;
 	}
 
+	Recipe recipe = itemRecipes_.at(itemCategory);
+	std::string name = itemNames_.at(itemCategory);
+
 	if (itemsManager->hasItem(itemCategory)) {
-		std::cout << "Can't craft the item : " << itemNames_.at(itemCategory) << " because you already have it" << std::endl;
+		std::cout << "Impossible de fabriquer : " << name << " car vous possédez déjà cet objet." << std::endl;
 		return false;
 	}
 
-	Recipe recipe = itemRecipes_.at(itemCategory);
-	std::string name = itemNames_.at(itemCategory);
+	
 	if (!hasPrerequisitesForCraft(player, recipe)) {
-		std::cout << "Can't craft the item : " << name << " because you don't have the prerequisites" << std::endl;
+		std::cout << "Impossible de fabriquer : " << name << " car vous ne possédez pas les prérequis." << std::endl;
 		return false;
 	}
 	if (!hasRessourcesForCraft(player, recipe)) {
-		std::cout << "Can't craft the item : " << name << " because you don't have enough ressources" << std::endl;
+		std::cout << "Impossible de fabriquer : " << name << " car vous n'avez pas assez de ressources." << std::endl;
 		return false;
 	}
 
@@ -91,11 +93,11 @@ bool CraftSystem::craftStructure(Game& game, Player& player, StructureType struc
 	Recipe recipe = structureRecipes_.at(structureType);
 	std::string name = structureNames_.at(structureType);
 	if (!hasPrerequisitesForCraft(player, recipe)) {
-		std::cout << "Can't craft the structure : " << name << " because you don't have the prerequisites" << std::endl;
+		std::cout << "Impossible de fabriquer la structure : " << name << " car vous ne possédez pas les prérequis." << std::endl;
 		return false;
 	}
 	if (!hasRessourcesForCraft(player, recipe)) {
-		std::cout << "Can't craft the structure : " << name << " because you don't have enough ressources" << std::endl;
+		std::cout << "Impossible de fabriquer la structure : " << name << " car vous n'avez pas assez de ressources." << std::endl;
 		return false;
 	}
 
@@ -126,9 +128,9 @@ void CraftSystem::showCraftList(Player& player) const
 		bool hasRessources = hasRessourcesForCraft(player, recipe);
 		Recipe recipe = itemRecipes_.at(itemCategory);
 		int numberOfTurns = recipe.turns_;
-		std::cout << index << ". Item: " << name << "( Turns to craft: " << numberOfTurns << ")" << std::endl;
+		std::cout << index << ". Objet : " << name << " (Tours nécessaires : " << numberOfTurns << ")" << std::endl;
 		if (itemsManager->hasItem(itemCategory)) {
-			std::cout << "  You already have this item." << std::endl;
+			std::cout << "  Vous possédez déjà cet objet." << std::endl;
 		}
 		else {
 			showRecipe(recipe, hasPrerequisites, hasRessources);
@@ -143,7 +145,8 @@ void CraftSystem::showCraftList(Player& player) const
 		std::string name = structureNames_.at(structureType);
 		bool hasPrerequisites = hasPrerequisitesForCraft(player, recipe);
 		bool hasRessources = hasRessourcesForCraft(player, recipe);
-		std::cout << index << ". Structure: " << name << std::endl;
+		int numberOfTurns = recipe.turns_;
+		std::cout << index << ". Structure : " << name << " (Tours nécessaires : " << numberOfTurns << ")" << std::endl;
 		showRecipe(recipe, hasPrerequisites, hasRessources);
 		std::cout << std::endl;
 		index++;
@@ -177,16 +180,16 @@ bool CraftSystem::craftByChoice(Game& game, Player& player, const std::string& c
 
 void CraftSystem::showConstructedStructures() const
 {
-	std::cout << "\nConstructed Structures :" << std::endl;
+	std::cout << "\nStructures construites :" << std::endl;
 	for (const auto& [structureType, count] : constructedStructures_) {
 		if (!isValidStructureType(structureType)) {
 			continue;
 		}
 		std::string name = structureNames_.at(structureType);
-		std::cout << "Structure: " << name << ", Count: " << count << std::endl;
+		std::cout << "Structure : " << name << ", Quantité : " << count << std::endl;
 	}
 	if (constructedStructures_.empty()) {
-		std::cout << "No structures have been constructed yet." << std::endl;
+		std::cout << "Aucune structure n'a encore été construite." << std::endl;
 	}
 }
 
@@ -249,7 +252,7 @@ void CraftSystem::finishCraft(Game& game, Player& player, RessourcesManager& res
 	int scoreToAdd = recipe.score_;
 	player.addScore(scoreToAdd);
 	game.increaseTurn(recipe.turns_);
-	std::cout << "Crafted " << name << "! Score increased by " << scoreToAdd << ". Turns increased by " << recipe.turns_ << "." << std::endl;
+	std::cout << name << " fabriqué(e) ! Score augmenté de " << scoreToAdd << ". Tours augmentés de " << recipe.turns_ << "." << std::endl;
 }
 
 bool CraftSystem::isValidItemCategory(const ItemCategory& itemCategory) const
@@ -284,9 +287,9 @@ void CraftSystem::showRecipe(const Recipe& recipe, bool hasPrerequisites, bool h
 {
 	// Show prerequisites
 	if (recipe.prerequisites_.empty()) {
-		std::cout << "  Prerequisites: None" << std::endl;
+		std::cout << "  Prérequis : Aucun" << std::endl;
 	} else {
-		std::cout << "  Prerequisites: ";
+		std::cout << "  Prérequis : ";
 		for (const auto& prerequisite : recipe.prerequisites_) {
 			if (!itemNames_.count(prerequisite)) {
 				throw std::runtime_error("CraftSystem::showRecipe() : Name for the given prerequisite item category not found.");
@@ -297,13 +300,13 @@ void CraftSystem::showRecipe(const Recipe& recipe, bool hasPrerequisites, bool h
 		std::cout << std::endl;
 	}
 	if (!hasPrerequisites) {
-		std::cout << "  You don't have the prerequisites to craft this structure." << std::endl;
+		std::cout << "  Vous n'avez pas les prérequis pour fabriquer ceci." << std::endl;
 	}
 	// Show ressources
 	if (recipe.ressources_.empty()) {
-		std::cout << "  Ressources cost : None" << std::endl;
+		std::cout << "  Coût en ressources : Aucun" << std::endl;
 	} else {
-		std::cout << "  Ressources cost : ";
+		std::cout << "  Coût en ressources : ";
 		for (const auto& ressource : recipe.ressources_) {
 			if (ressourceNames_.find(ressource.first) == ressourceNames_.end()) {
 				throw std::runtime_error("CraftSystem::showRecipe() : Name for the given ressource type not found.");
@@ -314,6 +317,6 @@ void CraftSystem::showRecipe(const Recipe& recipe, bool hasPrerequisites, bool h
 		std::cout << std::endl;
 	}
 	if (!hasRessources) {
-		std::cout << "  You don't have enough ressources to craft this structure." << std::endl;
+		std::cout << "  Vous n'avez pas assez de ressources pour fabriquer ceci." << std::endl;
 	}
 }

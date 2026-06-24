@@ -30,5 +30,8 @@ public:
 
 	/* Method to get the gather possibility number */
 	int getNumberOfGatherOptions() const;
+
+	/* Method to get the minimum turns amount to gather ressources */
+	int getMinimumTurnsToGather() const;
 };
 

@@ -53,6 +53,10 @@ bool GatherRessourcesSystem::gatherRessources(Game& game, Player& player, Ressou
 		throw std::runtime_error("GatherRessourcesSystem::gatherRessources, Invalid turns needed for gathering.");
 		return false;
 	}
+	if (!game.canIncreaseTurn(turnsNeeded)) {
+		std::cout << "Vous n'avez pas assez de tours restants pour collecter " << ressourceNames_.at(ressourceType) << ", celà prendrait " << turnsNeeded << " tours." << std::endl;
+		return false;
+	}
 
 	ressourcesManager->addRessource(ressourceType, gatheredAmount);
 	if (ressourceNames_.find(ressourceType) != ressourceNames_.end()) {
@@ -63,6 +67,7 @@ bool GatherRessourcesSystem::gatherRessources(Game& game, Player& player, Ressou
 	}
 
 	game.increaseTurn(turnsNeeded);
+	return true;
 }
 
 void GatherRessourcesSystem::showGatherOptions(Player& player) const
@@ -92,4 +97,15 @@ int GatherRessourcesSystem::getNumberOfGatherOptions() const
 		}
 	}
 	return numberOfOptions;
+}
+
+int GatherRessourcesSystem::getMinimumTurnsToGather() const
+{
+	int minTurns = std::numeric_limits<int>::max();
+	for (const auto& pair : gatheringTurns_) {
+		if (pair.second < minTurns) {
+			minTurns = pair.second;
+		}
+	}
+	return minTurns == std::numeric_limits<int>::max() ? 0 : minTurns;
 }

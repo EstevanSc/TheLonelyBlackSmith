@@ -25,6 +25,14 @@ bool CraftSystem::canCraftItem(Player& player, const ItemCategory& itemCategory)
 		return false;
 	}
 	Recipe recipe = itemRecipes_.at(itemCategory);
+	if (!checkPlayerComponents(player)) {
+		throw std::runtime_error("CraftSystem::craftStructure() : Player's components are not initialized.");
+		return false;
+	}
+	ItemsManager* itemsManager = player.getItemsManager();
+	if (itemsManager->hasItem(itemCategory)) {
+		return false;
+	}
 	return hasPrerequisitesForCraft(player, recipe) && hasRessourcesForCraft(player, recipe);
 }
 
@@ -60,6 +68,11 @@ bool CraftSystem::craftItem(Game& game, Player& player, const ItemCategory& item
 		return false;
 	}
 
+	int turnNeeded = recipe.turns_;
+	if (!game.canIncreaseTurn(turnNeeded)) {
+		std::cout << "Impossible de fabriquer : " << name << " car vous n'avez pas assez de tours restants. (nécessite " << turnNeeded << " tours)" << std::endl;
+		return false;
+	}
 	
 	if (!hasPrerequisitesForCraft(player, recipe)) {
 		std::cout << "Impossible de fabriquer : " << name << " car vous ne possédez pas les prérequis." << std::endl;
@@ -69,6 +82,7 @@ bool CraftSystem::craftItem(Game& game, Player& player, const ItemCategory& item
 		std::cout << "Impossible de fabriquer : " << name << " car vous n'avez pas assez de ressources." << std::endl;
 		return false;
 	}
+	
 
 	finishCraft(game, player, *ressourcesManager, recipe, name);
 	Item newItem = { name, itemCategory };
@@ -191,6 +205,28 @@ void CraftSystem::showConstructedStructures() const
 	if (constructedStructures_.empty()) {
 		std::cout << "Aucune structure n'a encore été construite." << std::endl;
 	}
+}
+
+int CraftSystem::getMinimumTurnToCraft(Player& player) const
+{
+	int minimumTurn = INT_MAX;
+	for (const auto& [itemCategory, recipe] : itemRecipes_) {
+		if (!isValidItemCategory(itemCategory)) {
+			continue;
+		}
+		if (canCraftItem(player, itemCategory)) {
+			minimumTurn = std::min(minimumTurn, recipe.turns_);
+		}
+	}
+	for (const auto& [structureType, recipe] : structureRecipes_) {
+		if (!isValidStructureType(structureType)) {
+			continue;
+		}
+		if (canCraftStructure(player, structureType)) {
+			minimumTurn = std::min(minimumTurn, recipe.turns_);
+		}
+	}
+	return (minimumTurn == INT_MAX) ? -1 : minimumTurn;
 }
 
 bool CraftSystem::hasPrerequisitesForCraft(Player& player, const Recipe recipe) const

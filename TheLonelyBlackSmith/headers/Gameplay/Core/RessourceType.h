@@ -1,8 +1,9 @@
 #pragma once
 
 /* Ressource types for crafting */
-enum RessourceType
+enum class RessourceType
 {
+	NONE,
 	WOOD,
 	STONE,
 	IRON,

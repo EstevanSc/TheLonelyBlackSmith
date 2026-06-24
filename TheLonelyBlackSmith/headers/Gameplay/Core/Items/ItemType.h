@@ -1,8 +1,9 @@
 #pragma once
 
 /* Item types for crafting */
-enum ItemType
+enum class ItemType
 {
+	NONE,
 	HAMMER,
 	AXE,
 	PICKAXE,

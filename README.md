@@ -58,6 +58,11 @@ Ajout d'une vérification pour que le joueur ne puisse pas dépasser le nombre m
 
 **Estimation : ~15 min**
 
+### 11. Création d'un système de bot (`bot system`)
+Création d'un bot simple jouant automatiquement selon un algorithme glouton : il priorise les crafts par ordre de score décroissant, et collecte la ressource dont il manque le plus quand aucun craft n'est possible. Le score final varie selon les runs en raison du loot aléatoire.
+
+**Estimation : ~1h10**
+
 ---
 
-**Temps total estimé : ~7h**
+**Temps total estimé : ~7h45**

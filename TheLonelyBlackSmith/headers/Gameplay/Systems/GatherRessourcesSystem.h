@@ -24,5 +24,11 @@ public:
 
 	/* Method to gather ressources, return if it's a success or not */
 	bool gatherRessources(Game& game, Player& player, RessourceType ressourceType); 
+
+	/* Method to show the gahter options */
+	void showGatherOptions(Player& player) const;
+
+	/* Method to get the gather possibility number */
+	int getNumberOfGatherOptions() const;
 };
 

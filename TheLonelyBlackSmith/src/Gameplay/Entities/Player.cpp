@@ -1,6 +1,14 @@
 #include "Gameplay/Entities/Player.h"
 #include <stdexcept>
 
+Player::Player()
+{
+	Config config;
+	ressourcesManager_ = new RessourcesManager(config);
+	itemsManager_ = new ItemsManager();
+	score_ = 0;
+}
+
 Player::Player(Config& config) : ressourcesManager_(new RessourcesManager(config)), itemsManager_(new ItemsManager()), score_(0)
 {
 }

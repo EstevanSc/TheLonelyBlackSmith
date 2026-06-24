@@ -26,6 +26,9 @@ public:
 
 	/* Method to check if an ItemCategory is owned */
 	bool hasItem(const ItemCategory& category);
+
+	/* Method to show owned tools list */
+	void showOwnedTools() const;
 	
 };
 

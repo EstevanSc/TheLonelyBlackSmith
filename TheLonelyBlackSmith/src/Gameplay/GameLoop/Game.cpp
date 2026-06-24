@@ -11,10 +11,12 @@ Game::Game()
 	gameState_ = GameState::MENU;
 	gatherRessourcesSystem_ = new GatherRessourcesSystem(config);
 	craftSystem_ = new CraftSystem(config);
+	config_ = &config;
 }
 
 Game::Game(Config& config) : player_(new Player(config)), currentTurn_(0), maxTurns_(config.MAX_TURNS), 
-gameState_(GameState::MENU), gatherRessourcesSystem_(new GatherRessourcesSystem(config)), craftSystem_(new CraftSystem(config))
+gameState_(GameState::MENU), gatherRessourcesSystem_(new GatherRessourcesSystem(config)), craftSystem_(new CraftSystem(config)),
+config_(&config)
 {
 
 }
@@ -185,20 +187,26 @@ void Game::handleGameState()
 
 void Game::showRessourcesDisplayInterface()
 {
+    if (!player_) {
+        throw std::runtime_error("Game::showRessourcesDisplayInterface() : Player is not initialized.");
+        return;
+	}
+    if (!player_->getRessourcesManager()) {
+        throw std::runtime_error("Game::showRessourcesDisplayInterface() : RessourcesManager is not initialized.");
+		return;
+    }
+    if (!player_->getItemsManager()) {
+        throw std::runtime_error("Game::showRessourcesDisplayInterface() : ItemsManager is not initialized.");
+    }
+
     std::cout << "\n--- Current Inventory ---" << std::endl;
 	RessourcesManager* resManager = player_->getRessourcesManager();
-    const auto& inventory = resManager->getRessources();
-    
-    if (resManager) {
-		const auto& inventory = resManager->getRessources();
+    ItemsManager* itemsManager = player_->getItemsManager();
 
-        std::cout << "Wood: " << inventory.at(RessourceType::WOOD) << " | "
-            << "Stone: " << inventory.at(RessourceType::STONE) << " | "
-            << "Iron: " << inventory.at(RessourceType::IRON) << std::endl;
-    }
-    else {
-		throw std::runtime_error("Game::showRessourcesDisplayInterface() : RessourcesManager is not initialized.");
-    }
+	resManager->showRessources();
+	itemsManager->showOwnedTools();
+	craftSystem_->showConstructedStructures();
+
 }
 
 void Game::showGameOverMenu()
@@ -223,15 +231,42 @@ void Game::showGameOverMenu()
 	}
 }
 
+void Game::resetGame()
+{
+    currentTurn_ = 0;
+    if (player_) {
+        delete player_;
+    }
+    if (config_) {
+        player_ = new Player(*config_);
+    }
+    else {
+        player_ = new Player();
+	}
+	gameState_ = GameState::MENU;
+}
+
 void Game::showGatherRessourcesInterface()
 {
+    if (!gatherRessourcesSystem_) {
+        throw std::runtime_error("Game::showGatherRessourcesInterface() : GatherRessourcesSystem is not initialized.");
+        return;
+	}
     std::cout << "\nWhich resource to gather?" << std::endl;
-    std::cout << "1. Wood | 2. Stone | 3. Iron" << std::endl;
+	gatherRessourcesSystem_->showGatherOptions(*player_);
+	int indexOfCancelOption = gatherRessourcesSystem_->getNumberOfGatherOptions() + 1;
+	std::cout << indexOfCancelOption << ". Back to Turn Menu" << std::endl;
     std::cout << "Choice: ";
 
     int resChoice;
     std::cin >> resChoice;
-
+    if (resChoice < 1 || resChoice > indexOfCancelOption) {
+        std::cout << "Invalid choice. Returning to turn menu" << std::endl;
+        return;
+	}
+    if (resChoice == indexOfCancelOption) {
+        return;
+    }
     RessourceType target = static_cast<RessourceType>(resChoice);
 	gatherRessourcesSystem_->gatherRessources(*this, *player_, target);
 }
@@ -262,6 +297,7 @@ void Game::showCraftItemInterface()
         return;
     }
     else {
-        std::cout << "Invalid choice." << std::endl;
+        std::cout << "Invalid choice. Returning to turn menu." << std::endl;
+        return;
 	}
 }

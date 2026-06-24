@@ -53,3 +53,15 @@ bool ItemsManager::hasItem(const ItemCategory& category)
 	}
 	return false;
 }
+
+void ItemsManager::showOwnedTools() const
+{
+    std::cout << "\nOwned Tools:" << std::endl;
+    for (const auto& pair : items_) {
+        const Item& item = pair.second;
+        std::cout << "- " << item.name_ << std::endl;
+	}
+    if (items_.empty()) {
+        std::cout << "No tools owned." << std::endl;
+	}
+}

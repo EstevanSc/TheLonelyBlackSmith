@@ -24,6 +24,9 @@ private:
 	/* name of structures */
 	std::map<StructureType, std::string> structureNames_;
 
+	/* constructed structures */
+	std::map<StructureType, int> constructedStructures_;
+
 public:
 	/* Constructors */
 	CraftSystem();
@@ -49,6 +52,9 @@ public:
 
 	/* Method to craft using a string choice */
 	bool craftByChoice(Game& game, Player& player, const std::string& choice);
+
+	/* Method to show constructed structures */
+	void showConstructedStructures() const;
 
 private:
 	// helper methods

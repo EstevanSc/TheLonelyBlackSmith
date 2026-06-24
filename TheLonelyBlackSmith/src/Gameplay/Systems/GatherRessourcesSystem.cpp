@@ -64,3 +64,32 @@ bool GatherRessourcesSystem::gatherRessources(Game& game, Player& player, Ressou
 
 	game.increaseTurn(turnsNeeded);
 }
+
+void GatherRessourcesSystem::showGatherOptions(Player& player) const
+{
+	for (int i = 1; i < static_cast<int>(RessourceType::COUNT); ++i) {
+		RessourceType ressourceType = static_cast<RessourceType>(i);
+		if (ressourceNames_.find(ressourceType) != ressourceNames_.end()) {
+			std::cout << i << ". " << ressourceNames_.at(ressourceType);
+		}
+		else {
+			std::cout << i << ". unknown";
+		}
+		if (i < static_cast<int>(RessourceType::COUNT) - 1) {
+			std::cout << " | ";
+		}
+	}
+	std::cout << std::endl;
+}
+
+int GatherRessourcesSystem::getNumberOfGatherOptions() const
+{
+	int numberOfOptions = 0;
+	for (int i = 0; i < static_cast<int>(RessourceType::COUNT); ++i) {
+		RessourceType ressourceType = static_cast<RessourceType>(i);
+		if (ressourceNames_.find(ressourceType) != ressourceNames_.end()) {
+			numberOfOptions++;
+		}
+	}
+	return numberOfOptions;
+}

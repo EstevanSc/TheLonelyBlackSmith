@@ -52,6 +52,11 @@ bool CraftSystem::craftItem(Game& game, Player& player, const ItemCategory& item
 		return false;
 	}
 
+	if (itemsManager->hasItem(itemCategory)) {
+		std::cout << "Can't craft the item : " << itemNames_.at(itemCategory) << " because you already have it" << std::endl;
+		return false;
+	}
+
 	Recipe recipe = itemRecipes_.at(itemCategory);
 	std::string name = itemNames_.at(itemCategory);
 	if (!hasPrerequisitesForCraft(player, recipe)) {
@@ -94,16 +99,23 @@ bool CraftSystem::craftStructure(Game& game, Player& player, StructureType struc
 		return false;
 	}
 
-	for (const auto& ressource : recipe.ressources_) {
-		ressourcesManager->removeRessource(ressource.first, ressource.second);
-	}
-
 	finishCraft(game, player, *ressourcesManager, recipe, name);
+	if (constructedStructures_.find(structureType) != constructedStructures_.end()) {
+		constructedStructures_[structureType]++;
+	}
+	else {
+		constructedStructures_[structureType] = 1;
+	}
 	return true;
 }
 
 void CraftSystem::showCraftList(Player& player) const
 {
+	if (!checkPlayerComponents(player)) {
+		throw std::runtime_error("CraftSystem::showCraftList() : Player's components are not initialized.");
+		return;
+	}
+	ItemsManager* itemsManager = player.getItemsManager();
 	int index = 1;
 	for (const auto& [itemCategory, recipe] : itemRecipes_) {
 		if (!isValidItemCategory(itemCategory)) {
@@ -113,8 +125,14 @@ void CraftSystem::showCraftList(Player& player) const
 		bool hasPrerequisites = hasPrerequisitesForCraft(player, recipe);
 		bool hasRessources = hasRessourcesForCraft(player, recipe);
 		Recipe recipe = itemRecipes_.at(itemCategory);
-		std::cout << index << ". Item: " << name << std::endl;
-		showRecipe(recipe, hasPrerequisites, hasRessources);
+		int numberOfTurns = recipe.turns_;
+		std::cout << index << ". Item: " << name << "( Turns to craft: " << numberOfTurns << ")" << std::endl;
+		if (itemsManager->hasItem(itemCategory)) {
+			std::cout << "  You already have this item." << std::endl;
+		}
+		else {
+			showRecipe(recipe, hasPrerequisites, hasRessources);
+		}
 		std::cout << std::endl;
 		index++;
 	}
@@ -155,6 +173,21 @@ bool CraftSystem::craftByChoice(Game& game, Player& player, const std::string& c
 		index++;
 	}
 	return false;
+}
+
+void CraftSystem::showConstructedStructures() const
+{
+	std::cout << "\nConstructed Structures :" << std::endl;
+	for (const auto& [structureType, count] : constructedStructures_) {
+		if (!isValidStructureType(structureType)) {
+			continue;
+		}
+		std::string name = structureNames_.at(structureType);
+		std::cout << "Structure: " << name << ", Count: " << count << std::endl;
+	}
+	if (constructedStructures_.empty()) {
+		std::cout << "No structures have been constructed yet." << std::endl;
+	}
 }
 
 bool CraftSystem::hasPrerequisitesForCraft(Player& player, const Recipe recipe) const
@@ -255,7 +288,11 @@ void CraftSystem::showRecipe(const Recipe& recipe, bool hasPrerequisites, bool h
 	} else {
 		std::cout << "  Prerequisites: ";
 		for (const auto& prerequisite : recipe.prerequisites_) {
-			std::cout << prerequisite << " ";
+			if (!itemNames_.count(prerequisite)) {
+				throw std::runtime_error("CraftSystem::showRecipe() : Name for the given prerequisite item category not found.");
+			}
+			std::string prerequisiteName = itemNames_.at(prerequisite);
+			std::cout << prerequisiteName << " ";
 		}
 		std::cout << std::endl;
 	}

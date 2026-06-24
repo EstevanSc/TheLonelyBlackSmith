@@ -125,6 +125,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Gameplay\Components\ItemsManager.cpp" />
+    <ClCompile Include="src\Gameplay\Entities\Player.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +138,8 @@
     <ClInclude Include="headers\Gameplay\Core\Recipe.h" />
     <ClInclude Include="headers\Gameplay\Core\RessourceType.h" />
     <ClInclude Include="headers\Gameplay\Core\StructureType.h" />
+    <ClInclude Include="headers\Gameplay\Entities\Player.h" />
+    <ClInclude Include="headers\Gameplay\Components\ItemsManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

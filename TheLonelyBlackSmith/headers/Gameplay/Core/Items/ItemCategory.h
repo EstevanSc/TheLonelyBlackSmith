@@ -1,6 +1,7 @@
 #pragma once
 #include "ItemType.h"
 #include "Gameplay/Core/RessourceType.h"
+#include <iostream>
 
 /* Item Category */
 struct ItemCategory
@@ -23,5 +24,12 @@ struct ItemCategory
 	/* == operator */
 	bool operator==(const ItemCategory& other) const {
 		return type_ == other.type_ && ressource_ == other.ressource_;
+	}
+
+	/* << operator */
+	friend std::ostream& operator<<(std::ostream& os, const ItemCategory& cat) {
+		os << "ItemCategory(type=" << static_cast<int>(cat.type_)
+			<< ", ressource=" << static_cast<int>(cat.ressource_) << ")";
+		return os;
 	}
 };

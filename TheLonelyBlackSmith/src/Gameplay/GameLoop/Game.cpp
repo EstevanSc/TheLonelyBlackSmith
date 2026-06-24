@@ -10,9 +10,11 @@ Game::Game()
 	maxTurns_ = config.MAX_TURNS;
 	gameState_ = GameState::MENU;
 	gatherRessourcesSystem_ = new GatherRessourcesSystem(config);
+	craftSystem_ = new CraftSystem(config);
 }
 
-Game::Game(Config& config) : player_(new Player(config)), currentTurn_(0), maxTurns_(config.MAX_TURNS), gameState_(GameState::MENU), gatherRessourcesSystem_(new GatherRessourcesSystem(config))
+Game::Game(Config& config) : player_(new Player(config)), currentTurn_(0), maxTurns_(config.MAX_TURNS), 
+gameState_(GameState::MENU), gatherRessourcesSystem_(new GatherRessourcesSystem(config)), craftSystem_(new CraftSystem(config))
 {
 
 }
@@ -134,8 +136,21 @@ void Game::handleMenuState()
 void Game::handleGameState()
 {
     int choice = 0;
+    if (!player_) {
+        throw std::runtime_error("Game::handleGameState() : Player is not initialized.");
+		return;
+	}
+    if (!gatherRessourcesSystem_) {
+        throw std::runtime_error("Game::handleGameState() : GatherRessourcesSystem is not initialized.");
+        return;
+    }
+    if (!craftSystem_) {
+        throw std::runtime_error("Game::handleGameState() : CraftSystem is not initialized.");
+        return;
+	}
     while (gameState_ == GameState::GAME) {
         std::cout << "\n--- Turn " << currentTurn_ << "/" << maxTurns_ << " ---" << std::endl;
+		std::cout << "Score: " << player_->getScore() << std::endl;
         std::cout << "1. Gather Resources" << std::endl;
         std::cout << "2. Craft Item" << std::endl;
         std::cout << "3. Show Current ressources" << std::endl;
@@ -223,11 +238,30 @@ void Game::showGatherRessourcesInterface()
 
 void Game::showCraftItemInterface()
 {
+    if (!craftSystem_) {
+        throw std::runtime_error("Game::showCraftItemInterface() : CraftSystem is not initialized.");
+        return;
+	}
+    if (!player_) {
+        throw std::runtime_error("Game::showCraftItemInterface() : Player is not initialized.");
+        return;
+    }
+
     std::cout << "\n--- Available Recipes ---" << std::endl;
-    std::cout << "1. Craft List..." << std::endl;
-    std::cout << "2. Back to Turn Menu" << std::endl;
+	craftSystem_->showCraftList(*player_);
+	int numberOfCrafts = craftSystem_->getNumberOfCrafts();
+	std::cout << numberOfCrafts + 1 << ". Back to Game Menu" << std::endl;
+	std::cout << "Choice: ";
 
     int craftChoice;
-	// TODO: Crafting System
     std::cin >> craftChoice;
+    if (craftChoice >= 1 && craftChoice <= numberOfCrafts) {
+		craftSystem_->craftByChoice(*this, *player_, std::to_string(craftChoice));
+    }
+    else if (craftChoice == numberOfCrafts + 1) {
+        return;
+    }
+    else {
+        std::cout << "Invalid choice." << std::endl;
+	}
 }

@@ -13,10 +13,4 @@ struct Item
 
 	/* category of the item */ 
 	ItemCategory category_;
-
-	/* recipe for crafting the item */
-	std::map<RessourceType, int> recipe_;
-
-	/* prerequise for the item craft */
-	std::map<ItemType, ItemType> prerequise_;
 };

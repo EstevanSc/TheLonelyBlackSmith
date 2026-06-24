@@ -79,3 +79,14 @@ const std::map<RessourceType, int>& RessourcesManager::getRessources() const
 {
 	return ressources_;
 }
+
+int RessourcesManager::getRessource(RessourceType type) const
+{
+	if (!ressourcesNames_.count(type)) {
+		throw std::invalid_argument("Invalid ressource type.");
+	}
+	if (ressources_.find(type) == ressources_.end()) {
+		return 0;
+	}
+	return ressources_.at(type);
+}

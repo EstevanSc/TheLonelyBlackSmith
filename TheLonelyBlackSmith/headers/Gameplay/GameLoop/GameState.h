@@ -6,6 +6,7 @@ enum class GameState
 	NONE,
 	MENU,
 	GAME,
+	BOTPLAYING,
 	GAMEOVER,
 	QUIT
 };
